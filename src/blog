@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# 目前先硬编码了
+path="HOME_PATH"
+
+function exe(){
+
+    if [ $1 == "-n" -a $# -ne 2 ]
+    then
+        return 1
+    fi
+
+    case $1 in
+    -c)
+        hexo clean
+        return 0
+        ;;
+    -d)
+        hexo clean
+        hexo generate
+        hexo deploy
+        return 0
+        ;;
+    -g)
+        hexo generate
+        return 0
+        ;;
+    -h)
+        show_help
+        return 0
+        ;;
+    -n)
+        hexo new $2
+        echo "here is abstract" >> "${path}/source/_posts/$2.md"
+        echo "<!-- more -->" >> "${path}/source/_posts/$2.md"
+        open "${path}/source/_posts/$2.md"
+        return 0
+        ;;
+    -o)
+        open "${path}/source/_posts/"
+        ;;
+    -s)
+        hexo clean
+        hexo generate
+        hexo server --debug
+        ;;
+    esac
+
+    if [ $1 != "-s" ]; then show_help; fi
+}
+
+function show_help(){
+    echo "blog命令可以快速创建并发布博客。命令格式:"
+    echo "------------------------------"
+    echo "usage: blog [-c] [-d] [-g] [-n <blog_title>] [-s]"
+    echo "------------------------------"
+    echo ""
+    echo "解释一下用法："
+    echo "blog -c 清除工作区已经构建的页面"
+    echo "blog -d 将博客部署到服务器"
+    echo "blog -g 在本地工作区构建页面"
+    echo "blog -h 显示帮助文档"
+    echo "blog -n <blog_title> 创建一个新的博客markdown文件，文件名中不支持空格^_^，并打开"
+    echo "blog -o 打开所有博客所在文件夹"
+    echo "blog -s 在本地运行服务器，验证本地构建"
+}
+
+if [ $# -eq 0 -o $# -gt 2 ]
+then
+    show_help
+    exit 1
+fi
+
+cd ${path}
+
+exe $@
