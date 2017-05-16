@@ -42,6 +42,7 @@ sed -i.bak "s/HOME_PATH/${home_path//\//\\/}/g" blog
 cd ${home_path}
 npm install
 npm install hexo-generator-searchdb --save
+npm install hexo-deployer-git --save
 
 cat << END
 爷，基本搞定了，您还需要做以下事情：
